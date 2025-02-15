@@ -18,7 +18,11 @@ export default function ExpenseTracker() {
   const [description, setDescription] = useState("")
   const [category, setCategory] = useState("Food")
   const [expenses, setExpenses] = useState<any[]>([])
-  const [editingExpense, setEditingExpense] = useState<any | null>(null)
+  const [editingExpense, setEditingExpense] = useState<any>({
+    amount: "",
+    category: "Food",
+    description: "",
+  });
   const [filterCategory, setFilterCategory] = useState("All")
   const [activeTab, setActiveTab] = useState("dashboard")
   const [user] = useAuthState(auth)
@@ -59,7 +63,7 @@ export default function ExpenseTracker() {
   }
 
   const startEditing = (expense: any) => {
-    setEditingExpense(expense)
+    setEditingExpense({ ...expense })
   }
 
   const updateExpense = async () => {
@@ -201,7 +205,7 @@ export default function ExpenseTracker() {
                                     <Input
                                       id="edit-amount"
                                       type="number"
-                                      value={editingExpense?.amount}
+                                      value={editingExpense?.amount ?? ""}
                                       onChange={(e) => setEditingExpense({ ...editingExpense, amount: e.target.value })}
                                       className="col-span-3"
                                     />
@@ -234,7 +238,7 @@ export default function ExpenseTracker() {
                                     </Label>
                                     <Input
                                       id="edit-description"
-                                      value={editingExpense?.description}
+                                      value={editingExpense?.description ?? ""}
                                       onChange={(e) =>
                                         setEditingExpense({ ...editingExpense, description: e.target.value })
                                       }
