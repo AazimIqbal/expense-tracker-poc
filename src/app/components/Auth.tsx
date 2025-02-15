@@ -26,7 +26,7 @@ export default function Auth() {
   // Validate password length
   const validatePassword = (password: string): boolean => password.length >= 6;
 
-  // Handle email validation
+  // Handle email validation on blur
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     if (!validateEmail(e.target.value)) {
@@ -36,7 +36,7 @@ export default function Auth() {
     }
   };
 
-  // Handle password validation
+  // Handle password validation on blur
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (!validatePassword(e.target.value)) {
@@ -46,7 +46,7 @@ export default function Auth() {
     }
   };
 
-  // Handle confirm password validation
+  // Handle confirm password validation on blur
   const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
     if (password !== e.target.value) {
@@ -94,128 +94,93 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex justify-center text-black items-center h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        {user ? (
-          <>
-            <p className="text-center font-semibold text-lg">Welcome, {user.displayName || user.email}!</p>
-            <button 
-              onClick={() => signOut(auth)} 
-              className="bg-red-500 text-white px-4 py-2 rounded w-full mt-4"
-            >
-              Sign Out
-            </button>
-          </>
-        ) : (
-          <>
-            {!isSignUp ? (
-              <>
-                <h2 className="text-xl font-bold text-center mb-4">Sign In</h2>
-                
-                <div className="mb-2">
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    className="border p-2 rounded w-full min-h-[40px]"
-                  />
-                  <p className="text-red-500 text-sm min-h-[20px]">{emailError}</p>
-                </div>
+    <div className="text-center text-black p-4">
+      {user ? (
+        <>
+          <p>Welcome, {user.displayName || user.email}!</p>
+          <button onClick={() => signOut(auth)} className="bg-red-500 text-white px-4 py-2 rounded">
+            Sign Out
+          </button>
+        </>
+      ) : (
+        <>
+          {!isSignUp ? (
+            <>
+              <div className="mb-4">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  className="border p-2 rounded w-full"
+                />
+                {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
 
-                <div className="mb-2">
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    className="border p-2 rounded w-full min-h-[40px]"
-                  />
-                  <p className="text-red-500 text-sm min-h-[20px]">{passwordError}</p>
-                </div>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  className="border p-2 rounded w-full mt-2"
+                />
+                {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
+              </div>
 
-                {error && <p className="text-red-500 text-center">{error}</p>}
+              {error && <p className="text-red-500">{error}</p>}
 
-                <button 
-                  onClick={signInWithEmail} 
-                  className="bg-green-500 text-white px-4 py-2 rounded w-full mt-2"
-                >
-                  Sign In
-                </button>
+              <button onClick={signInWithEmail} className="bg-green-500 text-white px-4 py-2 rounded mr-2">
+                Sign In
+              </button>
+              <button onClick={() => setIsSignUp(true)} className="bg-purple-500 text-white px-4 py-2 rounded">
+                Sign Up
+              </button>
+              <p className="my-4 text-white">or</p>
+              <button onClick={() => signInWithPopup(auth, provider)} className="bg-blue-500 text-white px-4 py-2 rounded">
+                Sign In with Google
+              </button>
+            </>
+          ) : (
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-bold mb-4">Sign Up</h2>
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={handleEmailChange}
+                className="border p-2 rounded w-full mb-2"
+              />
+              {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
 
-                <button 
-                  onClick={() => setIsSignUp(true)} 
-                  className="bg-purple-500 text-white px-4 py-2 rounded w-full mt-2"
-                >
-                  Sign Up
-                </button>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={handlePasswordChange}
+                className="border p-2 rounded w-full mb-2"
+              />
+              {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
 
-                <p className="text-center my-4">or</p>
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                className="border p-2 rounded w-full mb-2"
+              />
+              {confirmPasswordError && <p className="text-red-500 text-sm">{confirmPasswordError}</p>}
 
-                <button 
-                  onClick={() => signInWithPopup(auth, provider)} 
-                  className="bg-blue-500 text-white px-4 py-2 rounded w-full"
-                >
-                  Sign In with Google
-                </button>
-              </>
-            ) : (
-              <>
-                <h2 className="text-xl font-bold text-center mb-4">Sign Up</h2>
+              {error && <p className="text-red-500">{error}</p>}
 
-                <div className="mb-2">
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    className="border p-2 rounded w-full min-h-[40px]"
-                  />
-                  <p className="text-red-500 text-sm min-h-[20px]">{emailError}</p>
-                </div>
-
-                <div className="mb-2">
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    className="border p-2 rounded w-full min-h-[40px]"
-                  />
-                  <p className="text-red-500 text-sm min-h-[20px]">{passwordError}</p>
-                </div>
-
-                <div className="mb-2">
-                  <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={confirmPassword}
-                    onChange={handleConfirmPasswordChange}
-                    className="border p-2 rounded w-full min-h-[40px]"
-                  />
-                  <p className="text-red-500 text-sm min-h-[20px]">{confirmPasswordError}</p>
-                </div>
-
-                {error && <p className="text-red-500 text-center">{error}</p>}
-
-                <button 
-                  onClick={signUpWithEmail} 
-                  className="bg-purple-500 text-white px-4 py-2 rounded w-full mt-2"
-                >
-                  Sign Up
-                </button>
-
-                <button 
-                  onClick={() => setIsSignUp(false)} 
-                  className="bg-gray-500 text-white px-4 py-2 rounded w-full mt-2"
-                >
-                  Back to Sign In
-                </button>
-              </>
-            )}
-          </>
-        )}
-      </div>
+              <button onClick={signUpWithEmail} className="bg-purple-500 text-white px-4 py-2 rounded w-full">
+                Sign Up
+              </button>
+              <button onClick={() => setIsSignUp(false)} className="bg-gray-500 text-white px-4 py-2 rounded w-full mt-2">
+                Back to Sign In
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
